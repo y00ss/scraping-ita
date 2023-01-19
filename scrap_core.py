@@ -5,13 +5,16 @@ from fastapi import APIRouter, FastAPI
 from dotenv import dotenv_values
 from pymongo import MongoClient
 
+
 app = FastAPI()
-
-config = dotenv_values(".env")
-
 router = APIRouter()
 
+# Prendo le configurazioni dal file .env
+config = dotenv_values(".env")
 
+
+# All'evento d'avvio dell'applicazione
+# si connette al MongoDB specificato dalla configurazione.
 @app.on_event("startup")
 def stratup_db_client():
     app.mongo_client = MongoClient(config["MONGODB_URI"])
@@ -19,6 +22,8 @@ def stratup_db_client():
     print("Connection to the mongodb database!")
 
 
+# All'evento di spegnimento
+# si chiude la connesione a MongoDb
 @app.on_event("shutdown")
 def shutdow_db_client():
     app.mongodb_client.close()
@@ -31,7 +36,7 @@ client = MongoClient('localhost', 27017)
 db = client['streetAPI']
 
 # Creating a collection
-#italia_data = db['italia_data']
+# italia_data = db['italia_data']
 italia_data = db['ita_data_v1']
 scraper_osm = db['scraper_osm']
 
